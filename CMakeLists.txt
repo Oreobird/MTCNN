@@ -2,12 +2,15 @@ cmake_minimum_required(VERSION 2.8)
 
 project(mtcnn C CXX)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+find_package(OpenCV REQUIRED)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g")
 
 include_directories(
         ${CMAKE_CURRENT_LIST_DIR}/src/ncnn
         ${CMAKE_CURRENT_LIST_DIR}/src/ncnn/layer
-        ${CMAKE_CURRENT_LIST_DIR}/src)
+        ${CMAKE_CURRENT_LIST_DIR}/src
+        ${OpenCV_INCLUDE_DIRS})
 
 file(GLOB MTCNN_SRC ${CMAKE_CURRENT_LIST_DIR}/src/*.h
         ${CMAKE_CURRENT_LIST_DIR}/src/*.cpp
@@ -30,3 +33,5 @@ add_definitions(-ffast-math)
 add_definitions(-ftree-vectorize)
 add_definitions(-fvisibility=hidden -fvisibility-inlines-hidden)
 add_executable(mtcnn ${MTCNN_COMPILE_CODE} ${NCNN_COMPILE_CODE})
+
+target_link_libraries(mtcnn ${OpenCV_LIBS})

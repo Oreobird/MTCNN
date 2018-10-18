@@ -199,6 +199,7 @@ void MTCNN::PNet() {
         resize_bilinear(img, in, ws, hs);
         ncnn::Extractor ex = Pnet.create_extractor();
         ex.set_light_mode(true);
+        ex.set_num_threads(4);
         ex.input("data", in);
         ncnn::Mat score_, location_;
         ex.extract("prob1", score_);
@@ -221,11 +222,12 @@ void MTCNN::RNet() {
         resize_bilinear(tempIm, in, 24, 24);
         ncnn::Extractor ex = Rnet.create_extractor();
         ex.set_light_mode(true);
+        ex.set_num_threads(4);
         ex.input("data", in);
         ncnn::Mat score, bbox;
         ex.extract("prob1", score);
         ex.extract("conv5-2", bbox);
-        if (*(score.data + score.cstep) > threshold[1]) {
+        if (*((float *) score.data + score.cstep) > threshold[1]) {
             for (int channel = 0; channel < 4; channel++) {
                 it->regreCoord[channel] = bbox.channel(channel)[0];
             }
